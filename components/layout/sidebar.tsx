@@ -1,5 +1,8 @@
 "use client";
 
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+
 import {
   Shield,
   LayoutDashboard,
@@ -15,42 +18,44 @@ import {
 const menuItems = [
   {
     name: "Dashboard",
+    href: "/dashboard",
     icon: LayoutDashboard,
-    active: true,
   },
   {
     name: "Digital Twin",
+    href: "/digital-twin",
     icon: Factory,
-    active: false,
   },
   {
     name: "Alerts",
+    href: "/alerts",
     icon: TriangleAlert,
-    active: false,
   },
   {
     name: "Analytics",
+    href: "/analytics",
     icon: BarChart3,
-    active: false,
   },
   {
     name: "AI Copilot",
+    href: "/ai-copilot",
     icon: Bot,
-    active: false,
   },
   {
     name: "Reports",
+    href: "/reports",
     icon: FileText,
-    active: false,
   },
   {
     name: "Settings",
+    href: "/settings",
     icon: Settings,
-    active: false,
   },
 ];
 
 export default function Sidebar() {
+  const pathname = usePathname();
+
   return (
     <aside className="fixed left-0 top-0 flex h-screen w-64 flex-col border-r border-slate-800 bg-slate-900">
 
@@ -80,22 +85,21 @@ export default function Sidebar() {
         <div className="space-y-2">
           {menuItems.map((item) => {
             const Icon = item.icon;
+            const active = pathname === item.href;
 
             return (
-              <button
+              <Link
                 key={item.name}
-                className={`flex w-full items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition-all duration-200
-
-                ${
-                  item.active
+                href={item.href}
+                className={`flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition-all duration-200 ${
+                  active
                     ? "bg-blue-600 text-white shadow-lg"
                     : "text-slate-400 hover:bg-slate-800 hover:text-white"
                 }`}
               >
                 <Icon className="h-5 w-5" />
-
                 {item.name}
-              </button>
+              </Link>
             );
           })}
         </div>
