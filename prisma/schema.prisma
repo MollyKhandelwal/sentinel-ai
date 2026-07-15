@@ -1,0 +1,194 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../lib/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum UserRole {
+  ADMIN
+  SUPERVISOR
+  OPERATOR
+}
+
+enum SensorStatus {
+  ACTIVE
+  INACTIVE
+  MAINTENANCE
+}
+
+enum AlertSeverity {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+enum AlertStatus {
+  OPEN
+  ACKNOWLEDGED
+  RESOLVED
+}
+
+model User {
+  id        String   @id @default(uuid())
+  name      String?
+  email     String   @unique
+  password  String?
+  role      UserRole @default(OPERATOR)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  alerts        Alert[]
+  notifications Notification[]
+  chatHistory   ChatHistory[]
+
+  @@map("users")
+}
+
+model Facility {
+  id          String   @id @default(uuid())
+  name        String
+  location    String
+  description String?
+  createdAt   DateTime @default(now())
+
+  zones       Zone[]
+  digitalTwin DigitalTwin?
+
+  @@map("facilities")
+}
+
+model Zone {
+  id          String  @id @default(uuid())
+  name        String
+  description String?
+
+  facilityId String
+  facility   Facility @relation(fields: [facilityId], references: [id], onDelete: Cascade)
+
+  sensors Sensor[]
+
+  @@map("zones")
+}
+
+model Sensor {
+  id     String       @id @default(uuid())
+  name   String
+  type   String
+  status SensorStatus @default(ACTIVE)
+
+  zoneId String
+  zone   Zone   @relation(fields: [zoneId], references: [id], onDelete: Cascade)
+
+  readings SensorReading[]
+
+  createdAt DateTime @default(now())
+
+  @@map("sensors")
+}
+
+model SensorReading {
+  id          String @id @default(uuid())
+  methane     Float
+  temperature Float
+  humidity    Float
+
+  sensorId String
+  sensor   Sensor @relation(fields: [sensorId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@index([sensorId])
+  @@map("sensor_readings")
+}
+
+model Alert {
+  id      String @id @default(uuid())
+  title   String
+  message String
+
+  severity AlertSeverity
+  status   AlertStatus   @default(OPEN)
+
+  userId String?
+  user   User?   @relation(fields: [userId], references: [id])
+
+  createdAt DateTime @default(now())
+
+  @@map("alerts")
+}
+
+model AIRecommendation {
+  id          String @id @default(uuid())
+  title       String
+  description String
+  priority    String
+
+  createdAt DateTime @default(now())
+
+  @@map("ai_recommendations")
+}
+
+model DigitalTwin {
+  id String @id @default(uuid())
+
+  facilityId String   @unique
+  facility   Facility @relation(fields: [facilityId], references: [id], onDelete: Cascade)
+
+  health Float
+  status String
+
+  updatedAt DateTime @updatedAt
+
+  @@map("digital_twins")
+}
+
+model Notification {
+  id String @id @default(uuid())
+
+  title   String
+  message String
+  isRead  Boolean @default(false)
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@map("notifications")
+}
+
+model Report {
+  id      String @id @default(uuid())
+  title   String
+  fileUrl String
+
+  createdAt DateTime @default(now())
+
+  @@map("reports")
+}
+
+model ChatHistory {
+  id String @id @default(uuid())
+
+  role    String
+  message String
+
+  userId String?
+  user   User?   @relation(fields: [userId], references: [id])
+
+  createdAt DateTime @default(now())
+
+  @@map("chat_history")
+}
+
+model Setting {
+  id    String @id @default(uuid())
+  key   String @unique
+  value String
+
+  @@map("settings")
+}

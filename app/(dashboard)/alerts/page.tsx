@@ -1,3 +1,5 @@
+import AlertsCenter from "@/components/dashboard/alerts-center";
+
 export default function AlertsPage() {
   return (
     <div className="space-y-8">
@@ -14,6 +16,8 @@ export default function AlertsPage() {
           Real-time monitoring of all active industrial alerts.
         </p>
       </section>
+
+      <AlertsCenter />
     </div>
   );
 }

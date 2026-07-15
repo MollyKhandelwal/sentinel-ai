@@ -41,6 +41,23 @@ interface PlantContextType {
   setShutdownRecommended: React.Dispatch<
     React.SetStateAction<boolean>
   >;
+
+  // NEW GLOBAL STATES
+
+  plantHealth: number;
+  setPlantHealth: React.Dispatch<
+    React.SetStateAction<number>
+  >;
+
+  aiConfidence: number;
+  setAiConfidence: React.Dispatch<
+    React.SetStateAction<number>
+  >;
+
+  sensorOnline: number;
+  setSensorOnline: React.Dispatch<
+    React.SetStateAction<number>
+  >;
 }
 
 const PlantContext = createContext<PlantContextType | null>(
@@ -57,6 +74,17 @@ export function PlantProvider({
 
   const [shutdownRecommended, setShutdownRecommended] =
     useState(false);
+
+  // GLOBAL LIVE STATES
+
+  const [plantHealth, setPlantHealth] =
+    useState(94);
+
+  const [aiConfidence, setAiConfidence] =
+    useState(97.4);
+
+  const [sensorOnline, setSensorOnline] =
+    useState(128);
 
   const [zones, setZones] = useState<PlantZone[]>([
     {
@@ -121,12 +149,24 @@ export function PlantProvider({
       value={{
         selectedZone,
         setSelectedZone,
+
         zones,
         setZones,
+
         alerts,
         setAlerts,
+
         shutdownRecommended,
         setShutdownRecommended,
+
+        plantHealth,
+        setPlantHealth,
+
+        aiConfidence,
+        setAiConfidence,
+
+        sensorOnline,
+        setSensorOnline,
       }}
     >
       {children}
