@@ -86,9 +86,9 @@ export default function AICopilotPage() {
   };
 
   const onQuickPromptClick = (prompt: QuickPrompt) => {
-    console.log("Quick prompt clicked:", prompt.text);
-    sendMessage(prompt.text);
-  };
+  console.log("Quick prompt clicked:", prompt.title);
+  sendMessage(prompt.title);
+};
 
   const onCopy = (content: string) => {
     navigator.clipboard.writeText(content);
