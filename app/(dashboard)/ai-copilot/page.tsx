@@ -17,8 +17,6 @@ import {
   QuickPrompt,
 } from "@/types/chat";
 
-
-
 export default function AICopilotPage() {
   const {
     setZones,
