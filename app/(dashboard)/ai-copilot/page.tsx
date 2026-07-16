@@ -10,14 +10,14 @@ import AIInsights from "@/components/ai/ai-insights";
 import AlertToast from "@/components/common/alert-toast";
 
 import { usePlant } from "@/context/plant-context";
-import { ChatMessage, createMessage, QuickPrompt } from "@/types/chat";
+import {
+  ChatMessage,
+  Conversation,
+  createMessage,
+  QuickPrompt,
+} from "@/types/chat";
 
-export interface Conversation {
-  id: string;
-  title: string;
-  lastMessage: string;
-  isPinned: boolean;
-}
+
 
 export default function AICopilotPage() {
   const {
@@ -38,13 +38,15 @@ export default function AICopilotPage() {
   ]);
 
   const [conversations, setConversations] = useState<Conversation[]>([
-    {
-      id: "1",
-      title: "New Conversation",
-      lastMessage: "Start chatting with Sentinel AI",
-      isPinned: false,
-    },
-  ]);
+  {
+    id: "1",
+    title: "New Conversation",
+    lastMessage: "Start chatting with Sentinel AI",
+    timestamp: new Date().toISOString(),
+    isPinned: false,
+    messages: [],
+  },
+]);
   const [activeConversationId, setActiveConversationId] = useState("1");
 
   const onSelectConversation = (id: string) => {
@@ -54,13 +56,16 @@ export default function AICopilotPage() {
   };
 
   const onNewConversation = () => {
-    const newId = String(conversations.length + 1);
-    const newConversation: Conversation = {
-      id: newId,
-      title: `Conversation ${newId}`,
-      lastMessage: "New chat started",
-      isPinned: false,
-    };
+  const newId = String(conversations.length + 1);
+
+  const newConversation: Conversation = {
+    id: newId,
+    title: `Conversation ${newId}`,
+    lastMessage: "New chat started",
+    timestamp: new Date().toISOString(),
+    isPinned: false,
+    messages: [],
+  };
     setConversations((prev) => [...prev, newConversation]);
     setActiveConversationId(newId);
     setMessages([
@@ -316,4 +321,3 @@ return (
   </div>
 );
 }
-
